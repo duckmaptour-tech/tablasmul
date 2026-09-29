@@ -17,7 +17,8 @@ button{font-family:inherit;cursor:pointer}
 .app{min-height:100dvh;display:flex;flex-direction:column;gap:.5rem;max-width:480px;margin:0 auto;padding:.6rem .9rem 1rem}
 .top{text-align:center}
 .brand{font-weight:700;font-size:clamp(1.8rem,8vw,2.6rem);color:var(--accent);line-height:1.1}
-.hello{margin-top:.25rem;background:var(--card);color:var(--ink);border:0;border-radius:20px;padding:.25rem .9rem;font-weight:600;font-size:.95rem}
+.hello{margin-top:.25rem;display:inline-flex;align-items:center;gap:.5rem;background:var(--card);color:var(--ink);border:0;border-radius:28px;padding:.2rem 1rem .2rem .5rem;font-weight:600;font-size:.95rem}
+#hAv{font-size:2.4rem;line-height:1}#hAv:empty{display:none}
 .row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.25rem}
 .hint{color:var(--muted);font-size:.9rem}
 
@@ -114,15 +115,19 @@ dialog p{font-size:1.15rem;margin:.5rem 0 1rem}
 #nameInput{width:100%;margin:1rem 0;padding:.6rem;font:inherit;font-size:1.3rem;text-align:center;border:2px solid #ccd6e0;border-radius:16px;background:var(--bg);color:var(--ink)}
 #nameInput.bad{border-color:#dc3545}
 .acts{margin-top:1rem;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap}
+dialog{max-height:92dvh;overflow:auto}
+.avs{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem}
+.avs button{font-size:2rem;width:3.3rem;height:3.3rem;padding:0;line-height:1;border-radius:50%;border:3px solid transparent;background:var(--bg);transition:transform .12s}
+.avs button.on{border-color:var(--accent);transform:scale(1.12)}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top"><div class="brand">🎈 TablasMulti</div><button id="hello" class="hello"></button></div>
+  <div class="top"><div class="brand">🎈 TablasMulti</div><button id="hello" class="hello"><span id="hAv"></span><span id="hTx"></span></button></div>
 
   <div>
-    <div class="row"><span class="hint">Elige una tabla 👉</span><div id="modes" class="modes"><button class="btn btn-sm" data-m="ball">⚽ Pelotas</button><button class="btn btn-sm" data-m="pop">🫧 Pop it</button><button class="btn btn-sm" data-m="bub">🧼 Burbuja</button></div></div>
+    <div class="row"><div id="modes" class="modes"><button class="btn btn-sm" data-m="ball">⚽ Pelotas</button><button class="btn btn-sm" data-m="pop">🫧 Pop it</button><button class="btn btn-sm" data-m="bub">🧼 Burbuja</button></div></div>
     <div class="strip"><button id="tPrev" class="arrow" aria-label="Anterior">‹</button><div id="tables"></div><button id="tNext" class="arrow" aria-label="Siguiente">›</button></div>
   </div>
 
@@ -148,7 +153,7 @@ dialog p{font-size:1.15rem;margin:.5rem 0 1rem}
 </dialog>
 
 <dialog id="nameModal">
-  <div style="font-size:3rem">👋</div>
+  <div id="avatars" class="avs"></div>
   <h2 id="nameTitle"></h2>
   <input id="nameInput" maxlength="20" placeholder="Tu nombre" autocomplete="off">
   <button id="nameSave" class="btn btn-lg btn-warn">¡Guardar!</button>
@@ -165,7 +170,8 @@ const PRAISE=['¡Muy bien! 🎉','¡Genial! 🌟','¡Correcto! 🚀','¡Eres un 
 const RETRY=['¡Casi! Intenta otra vez 💪','¡Tú puedes! 🤔','Prueba con otra burbuja 🫧'];
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 let table='all',qs=[],i=0,score=0,streak=0,tries=0,locked=false,raf=0,cdT=0;
-let player='',prog={},mode='ball',armed=false;
+let player='',prog={},mode='ball',armed=false,avatar='',sel='';
+const AV=[['👧🏻','Niña blanca'],['👦🏻','Niño blanco'],['👱🏼‍♀️','Niña güera'],['👱🏼‍♂️','Niño güero'],['👧🏽','Niña morena'],['👦🏽','Niño moreno'],['🐱','Gato'],['🐶','Perrito'],['🐤','Pajarito']];
 
 // Almacenamiento: IndexedDB con respaldo en memoria
 const DB={db:null,mem:{},
@@ -185,7 +191,10 @@ function paintTables(){tb.querySelectorAll('.btn').forEach(b=>{const s=starsOf(p
   b.classList.toggle('on',b.dataset.t===String(table));
   b.querySelector('.mini').textContent=s?'★'.repeat(s)+'☆'.repeat(3-s):''})}
 function paintHello(){const tot=opts.reduce((n,k)=>n+starsOf(prog[k]),0);
-  $('hello').textContent=player?`👋 ¡Hola, ${player}! ✏️ · ⭐ ${tot}/33`:'👋 Escribe tu nombre ✏️'}
+  $('hAv').textContent=player?avatar||'👋':'';$('hTx').textContent=player?`¡Hola, ${player}! ✏️ · ⭐ ${tot}/33`:'👋 Escribe tu nombre ✏️'}
+function paintAv(){document.querySelectorAll('#avatars button').forEach(b=>b.classList.toggle('on',b.dataset.a===sel))}
+function buildAv(){AV.forEach(([e,n])=>{const b=document.createElement('button');b.textContent=e;b.dataset.a=e;b.title=n;b.setAttribute('aria-label',n);
+  b.onclick=()=>{sel=e;paintAv()};$('avatars').appendChild(b)})}
 function paintMode(){document.querySelectorAll('#modes .btn').forEach(b=>b.classList.toggle('on',b.dataset.m===mode))}
 document.querySelectorAll('#modes .btn').forEach(b=>b.onclick=()=>{mode=b.dataset.m;DB.set('mode',mode);paintMode();launch()});
 
@@ -202,10 +211,10 @@ tb.addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);
 const nameM=$('nameModal'),endM=$('endModal');
 [nameM,endM].forEach(d=>d.addEventListener('cancel',e=>e.preventDefault()));
 function disarm(){armed=false;$('resetBtn').textContent='Borrar mi progreso'}
-function openName(first){$('nameTitle').textContent=first?'¡Hola! ¿Cómo te llamas?':'Cambiar mi nombre';$('nameInput').value=player;
+function openName(first){$('nameTitle').textContent=first?'¡Hola! Elige tu avatar y tu nombre':'Mi avatar y mi nombre';$('nameInput').value=player;sel=avatar||AV[0][0];paintAv();
   $('nameInput').classList.remove('bad');$('nameCancel').hidden=first;$('resetBtn').hidden=first;disarm();nameM.showModal();$('nameInput').focus()}
 function saveName(){const v=$('nameInput').value.trim().slice(0,20);if(!v){$('nameInput').classList.add('bad');return}
-  player=v;DB.set('name',v);paintHello();nameM.close()}
+  player=v;avatar=sel;DB.set('name',v);DB.set('avatar',avatar);paintHello();nameM.close()}
 $('nameSave').onclick=saveName;$('nameCancel').onclick=()=>nameM.close();$('hello').onclick=()=>openName(!player);
 $('nameInput').onkeydown=e=>{if(e.key==='Enter')saveName()};
 $('nameInput').oninput=()=>$('nameInput').classList.remove('bad');
@@ -297,16 +306,16 @@ function finish(){
   const s=score>=9?3:score>=6?2:1,k=String(table),p=prog[k]||{games:0,best:0},prev=p.best;
   prog[k]={games:p.games+1,best:Math.max(prev,score),last:score};DB.set('prog',prog);paintTables();paintHello();
   $('stars').textContent='⭐'.repeat(s)+'☆'.repeat(3-s);
-  $('endTitle').textContent=nm(score===10?'¡Perfecto! 🏆':score>=6?'¡Muy bien hecho! 🎉':'¡Sigue practicando! 💪');
+  $('endTitle').textContent=(avatar?avatar+' ':'')+nm(score===10?'¡Perfecto! 🏆':score>=6?'¡Muy bien hecho! 🎉':'¡Sigue practicando! 💪');
   $('endText').textContent=`Acertaste ${score} de 10 a la primera. `+(score>prev&&p.games?'🎉 ¡Nuevo récord!':`Tu mejor marca: ${prog[k].best}/10.`);
   endM.showModal();
 }
 $('again').onclick=()=>{endM.close();start(table)};
 
 (async()=>{
-  await DB.open();player=(await DB.get('name'))||'';prog=(await DB.get('prog'))||{};
+  await DB.open();player=(await DB.get('name'))||'';avatar=(await DB.get('avatar'))||'';prog=(await DB.get('prog'))||{};
   const sm=await DB.get('mode');mode=['pop','bub'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
-  buildTables();paintHello();start(opts.includes(l)?l:2);
+  buildTables();buildAv();paintHello();start(opts.includes(l)?l:2);
   const sel=tb.querySelector('.on');
   if(sel)tb.scrollLeft+=(sel.getBoundingClientRect().left-tb.getBoundingClientRect().left)-(tb.clientWidth-sel.offsetWidth)/2;
   upd();setTimeout(upd,300);if(!player)openName(true);

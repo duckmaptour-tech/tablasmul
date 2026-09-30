@@ -135,6 +135,10 @@ box-shadow:none}
 #kind .btn,#modes .btn{min-height:48px;padding:.55rem 1.1rem;font-size:1.15rem;border-radius:16px}
 #kind .btn{min-height:54px;padding:.6rem 1.4rem;font-size:1.3rem}
 
+/* ajuste: los 4 modos en una sola fila */
+#modes{flex-wrap:nowrap;gap:.3rem;width:100%}
+#modes .btn{flex:1 1 0;min-width:0;padding:.5rem .15rem;font-size:clamp(.78rem,3.6vw,1.05rem);white-space:nowrap}
+
 /* modales nativos */
 dialog{border:0;border-radius:28px;background:var(--card);color:var(--ink);padding:1.5rem 1.2rem;width:min(90vw,380px);text-align:center;font-family:inherit}
 dialog::backdrop{background:rgba(0,0,0,.55)}

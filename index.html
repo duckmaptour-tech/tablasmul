@@ -139,6 +139,26 @@ box-shadow:none}
 #modes{flex-wrap:nowrap;gap:.3rem;width:100%}
 #modes .btn{flex:1 1 0;min-width:0;padding:.5rem .15rem;font-size:clamp(.78rem,3.6vw,1.05rem);white-space:nowrap}
 
+/* fila Práctica / Test / Reloj en una sola fila */
+#kind{flex-wrap:nowrap;gap:.3rem;width:100%}
+#kind .btn{flex:1 1 0;min-width:0;padding:.6rem .3rem;font-size:clamp(.9rem,4.4vw,1.3rem);white-space:nowrap}
+
+/* contra reloj */
+.qline{position:relative}
+.clock{position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:3;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+--p:100;background:conic-gradient(var(--accent) calc(var(--p)*1%),rgba(128,128,128,.28) 0);box-shadow:0 2px 8px rgba(0,0,0,.25);font-weight:700;font-size:1.25rem;color:var(--ink)}
+.clock::before{content:'';position:absolute;inset:5px;border-radius:50%;background:var(--card)}
+.clock span{position:relative}
+.clock.low{--accent:var(--bad);color:var(--bad);animation:tick .5s infinite alternate}
+@keyframes tick{to{transform:translateY(-50%) scale(1.12)}}
+.app.timer-on .qline{padding:0 54px}
+.app.timer-on .question{font-size:clamp(1.8rem,8.5vw,3.6rem)}
+
+/* tiempo del reloj (ajustes) */
+.secs{margin:.2rem 0 1rem}
+.secs .modes{margin-top:.3rem}
+.secs .btn{flex:1 1 0;min-width:0;padding:.4rem .2rem;font-size:1.1rem}
+
 /* modales nativos */
 dialog{border:0;border-radius:28px;background:var(--card);color:var(--ink);padding:1.5rem 1.2rem;width:min(90vw,380px);text-align:center;font-family:inherit}
 dialog::backdrop{background:rgba(0,0,0,.55)}
@@ -160,7 +180,7 @@ dialog{max-height:92dvh;overflow:auto}
   <button id="settings" aria-label="Ajustes" title="Ajustes">⚙️</button>
 
   <div>
-    <div class="row"><div id="kind" class="modes"><button class="btn btn-sm" data-k="prac">📝 Práctica</button><button class="btn btn-sm" data-k="test">🧪 Test</button></div></div>
+    <div class="row"><div id="kind" class="modes"><button class="btn btn-sm" data-k="prac">📝 Práctica</button><button class="btn btn-sm" data-k="test">🧪 Test</button><button id="clockBtn" class="btn btn-sm" aria-pressed="false">⏱️ Reloj</button></div></div>
     <div class="row"><div id="modes" class="modes"><button class="btn btn-sm" data-m="ball">⚽Pelotas</button><button class="btn btn-sm" data-m="glo">🎈Globos</button><button class="btn btn-sm" data-m="pop">🫧Pop it</button><button class="btn btn-sm" data-m="bub">🧼Burbuja</button></div></div>
     <div class="strip"><button id="tPrev" class="arrow" aria-label="Anterior">‹</button><div id="tables"></div><button id="tNext" class="arrow" aria-label="Siguiente">›</button></div>
   </div>
@@ -173,7 +193,7 @@ dialog{max-height:92dvh;overflow:auto}
   <div class="progress"><div id="bar"></div></div>
 
   <div class="card-q">
-    <div><div class="hint">¿Cuánto es?</div><div id="question" class="question"></div></div>
+    <div><div class="hint">¿Cuánto es?</div><div class="qline"><div id="question" class="question"></div><div id="clock" class="clock" hidden aria-hidden="true"><span id="clockN">3</span></div></div></div>
     <div><div id="msg" class="msg" aria-live="polite"></div><div id="cd" class="cd"></div></div>
     <div id="bubbles" class="bubbles"></div>
   </div>
@@ -191,6 +211,7 @@ dialog{max-height:92dvh;overflow:auto}
   <div id="avatars" class="avs"></div>
   <h2 id="nameTitle"></h2>
   <input id="nameInput" maxlength="20" placeholder="Tu nombre" autocomplete="off">
+  <div class="secs"><div class="hint">⏱️ Tiempo del reloj</div><div id="secs" class="modes"><button class="btn btn-sm" data-s="3">3 s</button><button class="btn btn-sm" data-s="5">5 s</button><button class="btn btn-sm" data-s="8">8 s</button></div></div>
   <button id="nameSave" class="btn btn-lg btn-warn">¡Guardar!</button>
   <div class="acts">
     <button id="nameCancel" class="btn btn-sm btn-gray">Cancelar</button>
@@ -205,6 +226,7 @@ const PRAISE=['¡Muy bien! 🎉','¡Genial! 🌟','¡Correcto! 🚀','¡Eres un 
 const RETRY=['¡Casi! Intenta otra vez 💪','¡Tú puedes! 🤔','Prueba con otra burbuja 🫧'];
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 let table='all',qs=[],i=0,score=0,streak=0,tries=0,locked=false,raf=0,cdT=0;
+let timerOn=false,tmT=0,secs=3;
 let player='',prog={},tprog={},answers=[],kind='prac',mode='ball',armed=false,avatar='',sel='';
 const P=()=>kind==='test'?tprog:prog;
 const AV=[['👧🏻','Niña blanca'],['👦🏻','Niño blanco'],['👱🏼‍♀️','Niña güera'],['👱🏼‍♂️','Niño güero'],['👧🏽','Niña morena'],['👦🏽','Niño moreno'],['🐱','Gato'],['🐶','Perrito'],['🐤','Pajarito']];
@@ -233,8 +255,12 @@ function buildAv(){AV.forEach(([e,n])=>{const b=document.createElement('button')
   b.onclick=()=>{sel=e;paintAv()};$('avatars').appendChild(b)})}
 function paintMode(){document.querySelectorAll('#modes .btn').forEach(b=>b.classList.toggle('on',b.dataset.m===mode))}
 document.querySelectorAll('#modes .btn').forEach(b=>b.onclick=()=>{mode=b.dataset.m;DB.set('mode',mode);paintMode();launch()});
-function paintKind(){document.querySelectorAll('#kind .btn').forEach(b=>b.classList.toggle('on',b.dataset.k===kind));document.querySelector('.app').classList.toggle('test',kind==='test')}
-document.querySelectorAll('#kind .btn').forEach(b=>b.onclick=()=>{kind=b.dataset.k;DB.set('kind',kind);paintKind();paintHello();start(table)});
+function paintKind(){document.querySelectorAll('#kind .btn[data-k]').forEach(b=>b.classList.toggle('on',b.dataset.k===kind));document.querySelector('.app').classList.toggle('test',kind==='test')}
+function paintSecs(){document.querySelectorAll('#secs .btn').forEach(b=>b.classList.toggle('on',+b.dataset.s===secs))}
+document.querySelectorAll('#secs .btn').forEach(b=>b.onclick=()=>{secs=+b.dataset.s;DB.set('secs',secs);paintSecs();if(timerOn&&!locked)startClock()});
+function paintClock(){$('clockBtn').classList.toggle('on',timerOn);$('clockBtn').setAttribute('aria-pressed',timerOn);document.querySelector('.app').classList.toggle('timer-on',timerOn)}
+$('clockBtn').onclick=()=>{timerOn=!timerOn;DB.set('timer',timerOn);paintClock();start(table)};
+document.querySelectorAll('#kind .btn[data-k]').forEach(b=>b.onclick=()=>{kind=b.dataset.k;DB.set('kind',kind);paintKind();paintHello();start(table)});
 
 let ac;function beep(f){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;
   o.frequency.setValueAtTime(f,n);o.frequency.exponentialRampToValueAtTime(f/2.2,n+.08);g.gain.setValueAtTime(.25,n);g.gain.exponentialRampToValueAtTime(.001,n+.12);o.connect(g).connect(ac.destination);o.start();o.stop(n+.13)}catch(e){}}
@@ -268,6 +294,30 @@ function distract(a,b){
   return l;
 }
 function start(t){table=t;qs=makeQs(t);i=0;score=0;streak=0;answers=[];DB.set('last',t);paintTables();show()}
+function stopClock(){clearInterval(tmT)}
+function startClock(){
+  stopClock();const c=$('clock');
+  if(!timerOn){c.hidden=true;return}
+  const T=secs*1000,t0=performance.now();c.hidden=false;
+  const paint=()=>{const left=Math.max(0,T-(performance.now()-t0));$('clockN').textContent=Math.ceil(left/1000);c.style.setProperty('--p',left/T*100);c.classList.toggle('low',left<=1000);return left};
+  paint();tmT=setInterval(()=>{if(paint()<=0)timeUp()},50);
+}
+function autoNext(){
+  let n=3;const go=()=>{clearInterval(cdT);$('cd').innerHTML='';i++;i<10?show():finish()};
+  const draw=()=>{$('cd').innerHTML=`<button class="cdbtn">${i===9?'Resultado':'Siguiente'} en ${n} ⏭️</button>`;$('cd').firstChild.onclick=go};
+  draw();cdT=setInterval(()=>{n--;n<=0?go():draw()},1000);
+}
+function timeUp(){
+  stopClock();if(locked)return;locked=true;
+  const [a,b]=qs[i],ans=a*b;
+  box.querySelectorAll('.bubble').forEach(x=>x.disabled=true);
+  if(kind==='test'){answers.push({a,b,ans,v:null});clearInterval(cdT);cdT=setTimeout(()=>{i++;i<10?show():finish()},550);return}
+  streak=0;$('streak').textContent=0;
+  const ok=[...box.children].find(x=>x.dataset.v===String(ans));if(ok)ok.classList.add('ok');
+  $('question').textContent=`${a} × ${b} = ${ans}`;$('question').classList.add('ok');
+  $('msg').textContent='¡Se acabó el tiempo! ⏰';$('msg').style.color='var(--bad)';
+  autoNext();
+}
 function show(){
   clearInterval(cdT);$('cd').innerHTML='';const [a,b]=qs[i];tries=0;locked=false;
   $('question').classList.remove('ok');$('question').textContent=`${a} × ${b} = ?`;$('msg').textContent='';
@@ -275,9 +325,9 @@ function show(){
   $('bar').style.width=(i/10*100)+'%';
   box.innerHTML='';
   shuffle([a*b,...distract(a,b)]).forEach(v=>{
-    const el=document.createElement('button');el.className='bubble';el.textContent=v;
+    const el=document.createElement('button');el.className='bubble';el.textContent=v;el.dataset.v=v;
     el.onclick=()=>pick(el,v,a*b);box.appendChild(el)});
-  launch();
+  launch();startClock();
 }
 function launch(){
   cancelAnimationFrame(raf);
@@ -339,25 +389,24 @@ function confetti(){
 function pick(el,v,ans){
   if(locked||el.disabled)return;
   if(kind==='test'){
-    locked=true;const [a,b]=qs[i];el.classList.add('sel');beep(500);
+    locked=true;stopClock();const [a,b]=qs[i];el.classList.add('sel');beep(500);
     answers.push({a,b,ans,v});if(v===ans)score++;
     box.querySelectorAll('.bubble').forEach(x=>x.disabled=true);
     clearInterval(cdT);cdT=setTimeout(()=>{i++;i<10?show():finish()},550);return}
   if(mode!=='ball')beep(v===ans?700:220);
   if(v===ans){
-    locked=true;el.classList.add('ok');if(tries===0)score++;streak++;if(streak%3===0)confetti();
+    locked=true;stopClock();el.classList.add('ok');if(tries===0)score++;streak++;if(streak%3===0)confetti();
     $('score').textContent=score;$('streak').textContent=streak;
     const [a,b]=qs[i];$('question').textContent=`${a} × ${b} = ${ans}`;$('question').classList.add('ok');$('msg').textContent=nm(rnd(PRAISE));$('msg').style.color='var(--ok)';
     box.querySelectorAll('.bubble').forEach(x=>x.disabled=true);
-    let n=3;const go=()=>{clearInterval(cdT);$('cd').innerHTML='';i++;i<10?show():finish()};
-    const draw=()=>{$('cd').innerHTML=`<button class="cdbtn">${i===9?'Resultado':'Siguiente'} en ${n} ⏭️</button>`;$('cd').firstChild.onclick=go};
-    draw();cdT=setInterval(()=>{n--;n<=0?go():draw()},1000);
+    autoNext();
   }else{
     tries++;streak=0;$('streak').textContent=0;el.classList.add('bad');el.disabled=true;
     $('msg').textContent=nm(rnd(RETRY));$('msg').style.color='var(--bad)';
   }
 }
 function finish(){
+  stopClock();$('clock').hidden=true;
   $('bar').style.width='100%';
   const test=kind==='test',pr=P(),s=score>=9?3:score>=6?2:1,k=String(table),p=pr[k]||{games:0,best:0},prev=p.best;
   pr[k]={games:p.games+1,best:Math.max(prev,score),last:score};DB.set(test?'tprog':'prog',pr);paintTables();paintHello();
@@ -365,7 +414,7 @@ function finish(){
   $('endTitle').textContent=(avatar?avatar+' ':'')+nm(score===10?'¡Perfecto! 🏆':score>=6?'¡Muy bien hecho! 🎉':'¡Sigue practicando! 💪');
   $('endText').textContent=(test?`🧪 Resultado del test: ${score} de 10. `:`Acertaste ${score} de 10 a la primera. `)+(score>prev&&p.games?'🎉 ¡Nuevo récord!':`Tu mejor marca: ${pr[k].best}/10.`);
   const bad=test?answers.filter(r=>r.v!==r.ans):[];
-  $('review').innerHTML=bad.length?'<b>Para repasar:</b><br>'+bad.map(r=>`${r.a} × ${r.b} = ${r.ans} <span class="hint">(marcaste ${r.v})</span>`).join('<br>'):'';
+  $('review').innerHTML=bad.length?'<b>Para repasar:</b><br>'+bad.map(r=>`${r.a} × ${r.b} = ${r.ans} <span class="hint">(${r.v===null?'sin respuesta ⏰':'marcaste '+r.v})</span>`).join('<br>'):'';
   endM.showModal();
 }
 $('again').onclick=()=>{endM.close();start(table)};
@@ -373,7 +422,7 @@ $('again').onclick=()=>{endM.close();start(table)};
 (async()=>{
   await DB.open();player=(await DB.get('name'))||'';avatar=(await DB.get('avatar'))||'';prog=(await DB.get('prog'))||{};
   tprog=(await DB.get('tprog'))||{};kind=(await DB.get('kind'))==='test'?'test':'prac';paintKind();
-  const sm=await DB.get('mode');mode=['pop','bub','glo'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
+  timerOn=(await DB.get('timer'))===true;{const v=await DB.get('secs');secs=[3,5,8].includes(v)?v:3}paintSecs();paintClock();const sm=await DB.get('mode');mode=['pop','bub','glo'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
   buildTables();buildAv();paintHello();start(opts.includes(l)?l:2);
   const sel=tb.querySelector('.on');
   if(sel)tb.scrollLeft+=(sel.getBoundingClientRect().left-tb.getBoundingClientRect().left)-(tb.clientWidth-sel.offsetWidth)/2;

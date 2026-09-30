@@ -84,10 +84,10 @@ background:radial-gradient(circle at 38% 30%,color-mix(in srgb,var(--c) 55%,#fff
 box-shadow:0 0 0 3px var(--rim),inset 0 3px 4px rgba(255,255,255,.45),inset 0 -4px 6px rgba(0,0,0,.15),0 4px 5px rgba(0,0,0,.25);transition:box-shadow .1s}
 .popit .bubble::after{top:16%;left:24%;width:28%;height:16%}
 .popit .bubble:hover:not(:disabled){transform:none}
-.popit .bubble.popped,.popit .bubble.ok,.popit .bubble.bad{animation:none;transform:none;
+.popit .bubble.popped,.popit .bubble.ok,.popit .bubble.bad,.popit .bubble.sel{animation:none;transform:none;
 background:radial-gradient(circle at 62% 70%,color-mix(in srgb,var(--c) 55%,#fff) 0,var(--c) 55%,color-mix(in srgb,var(--c) 75%,#000) 100%);
 box-shadow:0 0 0 3px var(--rim),inset 0 6px 9px rgba(0,0,0,.35),0 1px 1px rgba(0,0,0,.2)}
-.popit .bubble.popped::after,.popit .bubble.ok::after{opacity:0}
+.popit .bubble.popped::after,.popit .bubble.ok::after,.popit .bubble.sel::after{opacity:0}
 .popit .bubble.bad{color:rgba(29,43,18,.5)}
 
 /* modo burbuja de jabón */
@@ -122,6 +122,13 @@ box-shadow:none}
 .balloon .bubble.bad{animation:burst .35s forwards;pointer-events:none}
 .balloon .bubble.bad::before{content:'💥';font-size:3rem;-webkit-text-stroke:0;color:inherit}
 
+/* modo test */
+.bubble.sel{--c:#7d5fd6!important;animation:pop .35s}
+.soap .bubble.sel,.balloon .bubble.sel{animation:burst .45s forwards}
+.app.test .stat:nth-child(-n+2){display:none}
+.app.test .stats{grid-template-columns:1fr}
+#review{font-size:1rem;text-align:left;margin:.5rem 0 1rem}
+
 /* modales nativos */
 dialog{border:0;border-radius:28px;background:var(--card);color:var(--ink);padding:1.5rem 1.2rem;width:min(90vw,380px);text-align:center;font-family:inherit}
 dialog::backdrop{background:rgba(0,0,0,.55)}
@@ -143,6 +150,7 @@ dialog{max-height:92dvh;overflow:auto}
   <button id="settings" aria-label="Ajustes" title="Ajustes">⚙️</button>
 
   <div>
+    <div class="row"><div id="kind" class="modes"><button class="btn btn-sm" data-k="prac">📝 Práctica</button><button class="btn btn-sm" data-k="test">🧪 Test</button></div></div>
     <div class="row"><div id="modes" class="modes"><button class="btn btn-sm" data-m="ball">⚽ Pelotas</button><button class="btn btn-sm" data-m="glo">🎈 Globos</button><button class="btn btn-sm" data-m="pop">🫧 Pop it</button><button class="btn btn-sm" data-m="bub">🧼 Burbuja</button></div></div>
     <div class="strip"><button id="tPrev" class="arrow" aria-label="Anterior">‹</button><div id="tables"></div><button id="tNext" class="arrow" aria-label="Siguiente">›</button></div>
   </div>
@@ -165,6 +173,7 @@ dialog{max-height:92dvh;overflow:auto}
   <div id="stars" style="font-size:3rem"></div>
   <h2 id="endTitle"></h2>
   <p id="endText"></p>
+  <div id="review"></div>
   <button id="again" class="btn btn-lg btn-warn">🔄 Jugar otra vez</button>
 </dialog>
 
@@ -186,7 +195,8 @@ const PRAISE=['¡Muy bien! 🎉','¡Genial! 🌟','¡Correcto! 🚀','¡Eres un 
 const RETRY=['¡Casi! Intenta otra vez 💪','¡Tú puedes! 🤔','Prueba con otra burbuja 🫧'];
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 let table='all',qs=[],i=0,score=0,streak=0,tries=0,locked=false,raf=0,cdT=0;
-let player='',prog={},mode='ball',armed=false,avatar='',sel='';
+let player='',prog={},tprog={},answers=[],kind='prac',mode='ball',armed=false,avatar='',sel='';
+const P=()=>kind==='test'?tprog:prog;
 const AV=[['👧🏻','Niña blanca'],['👦🏻','Niño blanco'],['👱🏼‍♀️','Niña güera'],['👱🏼‍♂️','Niño güero'],['👧🏽','Niña morena'],['👦🏽','Niño moreno'],['🐱','Gato'],['🐶','Perrito'],['🐤','Pajarito']];
 
 // Almacenamiento: IndexedDB con respaldo en memoria
@@ -203,16 +213,18 @@ const tb=$('tables'),box=$('bubbles');
 function buildTables(){opts.forEach(t=>{const b=document.createElement('button');b.className='btn';b.dataset.t=t;
   b.innerHTML='<span class="tn"></span><span class="mini"></span>';b.firstChild.textContent=t==='all'?'🎲 Mezcla':t;
   b.onclick=()=>start(t);tb.appendChild(b)})}
-function paintTables(){tb.querySelectorAll('.btn').forEach(b=>{const s=starsOf(prog[b.dataset.t]);
+function paintTables(){tb.querySelectorAll('.btn').forEach(b=>{const s=starsOf(P()[b.dataset.t]);
   b.classList.toggle('on',b.dataset.t===String(table));
   b.querySelector('.mini').textContent=s?'★'.repeat(s)+'☆'.repeat(3-s):''})}
-function paintHello(){const tot=opts.reduce((n,k)=>n+starsOf(prog[k]),0);
+function paintHello(){const tot=opts.reduce((n,k)=>n+starsOf(P()[k]),0);
   $('hAv').textContent=player?avatar||'👋':'';$('hTx').textContent=player?`¡Hola, ${player}! · ⭐ ${tot}/33`:'👋 Escribe tu nombre'}
 function paintAv(){document.querySelectorAll('#avatars button').forEach(b=>b.classList.toggle('on',b.dataset.a===sel))}
 function buildAv(){AV.forEach(([e,n])=>{const b=document.createElement('button');b.textContent=e;b.dataset.a=e;b.title=n;b.setAttribute('aria-label',n);
   b.onclick=()=>{sel=e;paintAv()};$('avatars').appendChild(b)})}
 function paintMode(){document.querySelectorAll('#modes .btn').forEach(b=>b.classList.toggle('on',b.dataset.m===mode))}
 document.querySelectorAll('#modes .btn').forEach(b=>b.onclick=()=>{mode=b.dataset.m;DB.set('mode',mode);paintMode();launch()});
+function paintKind(){document.querySelectorAll('#kind .btn').forEach(b=>b.classList.toggle('on',b.dataset.k===kind));document.querySelector('.app').classList.toggle('test',kind==='test')}
+document.querySelectorAll('#kind .btn').forEach(b=>b.onclick=()=>{kind=b.dataset.k;DB.set('kind',kind);paintKind();paintHello();start(table)});
 
 let ac;function beep(f){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;
   o.frequency.setValueAtTime(f,n);o.frequency.exponentialRampToValueAtTime(f/2.2,n+.08);g.gain.setValueAtTime(.25,n);g.gain.exponentialRampToValueAtTime(.001,n+.12);o.connect(g).connect(ac.destination);o.start();o.stop(n+.13)}catch(e){}}
@@ -235,7 +247,7 @@ $('nameSave').onclick=saveName;$('nameCancel').onclick=()=>nameM.close();$('sett
 $('nameInput').onkeydown=e=>{if(e.key==='Enter')saveName()};
 $('nameInput').oninput=()=>$('nameInput').classList.remove('bad');
 $('resetBtn').onclick=()=>{if(!armed){armed=true;$('resetBtn').textContent='¿Seguro? Toca otra vez';return}
-  prog={};DB.set('prog',prog);paintTables();paintHello();disarm();nameM.close()};
+  prog={};tprog={};DB.set('prog',prog);DB.set('tprog',tprog);paintTables();paintHello();disarm();nameM.close()};
 
 // Preguntas
 function makeQs(t){return shuffle([1,2,3,4,5,6,7,8,9,10]).map(b=>{const a=t==='all'?1+Math.floor(Math.random()*10):t;return t!=='all'||Math.random()<.5?[a,b]:[b,a]})}
@@ -245,7 +257,7 @@ function distract(a,b){
   while(l.length<2){const x=1+Math.floor(Math.random()*100);if(x!==ans&&!l.includes(x))l.push(x)}
   return l;
 }
-function start(t){table=t;qs=makeQs(t);i=0;score=0;streak=0;DB.set('last',t);paintTables();show()}
+function start(t){table=t;qs=makeQs(t);i=0;score=0;streak=0;answers=[];DB.set('last',t);paintTables();show()}
 function show(){
   clearInterval(cdT);$('cd').innerHTML='';const [a,b]=qs[i];tries=0;locked=false;
   $('question').classList.remove('ok');$('question').textContent=`${a} × ${b} = ?`;$('msg').textContent='';
@@ -316,6 +328,11 @@ function confetti(){
 }
 function pick(el,v,ans){
   if(locked||el.disabled)return;
+  if(kind==='test'){
+    locked=true;const [a,b]=qs[i];el.classList.add('sel');beep(500);
+    answers.push({a,b,ans,v});if(v===ans)score++;
+    box.querySelectorAll('.bubble').forEach(x=>x.disabled=true);
+    clearInterval(cdT);cdT=setTimeout(()=>{i++;i<10?show():finish()},550);return}
   if(mode!=='ball')beep(v===ans?700:220);
   if(v===ans){
     locked=true;el.classList.add('ok');if(tries===0)score++;streak++;if(streak%3===0)confetti();
@@ -332,17 +349,20 @@ function pick(el,v,ans){
 }
 function finish(){
   $('bar').style.width='100%';
-  const s=score>=9?3:score>=6?2:1,k=String(table),p=prog[k]||{games:0,best:0},prev=p.best;
-  prog[k]={games:p.games+1,best:Math.max(prev,score),last:score};DB.set('prog',prog);paintTables();paintHello();
+  const test=kind==='test',pr=P(),s=score>=9?3:score>=6?2:1,k=String(table),p=pr[k]||{games:0,best:0},prev=p.best;
+  pr[k]={games:p.games+1,best:Math.max(prev,score),last:score};DB.set(test?'tprog':'prog',pr);paintTables();paintHello();
   $('stars').textContent='⭐'.repeat(s)+'☆'.repeat(3-s);
   $('endTitle').textContent=(avatar?avatar+' ':'')+nm(score===10?'¡Perfecto! 🏆':score>=6?'¡Muy bien hecho! 🎉':'¡Sigue practicando! 💪');
-  $('endText').textContent=`Acertaste ${score} de 10 a la primera. `+(score>prev&&p.games?'🎉 ¡Nuevo récord!':`Tu mejor marca: ${prog[k].best}/10.`);
+  $('endText').textContent=(test?`🧪 Resultado del test: ${score} de 10. `:`Acertaste ${score} de 10 a la primera. `)+(score>prev&&p.games?'🎉 ¡Nuevo récord!':`Tu mejor marca: ${pr[k].best}/10.`);
+  const bad=test?answers.filter(r=>r.v!==r.ans):[];
+  $('review').innerHTML=bad.length?'<b>Para repasar:</b><br>'+bad.map(r=>`${r.a} × ${r.b} = ${r.ans} <span class="hint">(marcaste ${r.v})</span>`).join('<br>'):'';
   endM.showModal();
 }
 $('again').onclick=()=>{endM.close();start(table)};
 
 (async()=>{
   await DB.open();player=(await DB.get('name'))||'';avatar=(await DB.get('avatar'))||'';prog=(await DB.get('prog'))||{};
+  tprog=(await DB.get('tprog'))||{};kind=(await DB.get('kind'))==='test'?'test':'prac';paintKind();
   const sm=await DB.get('mode');mode=['pop','bub','glo'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
   buildTables();buildAv();paintHello();start(opts.includes(l)?l:2);
   const sel=tb.querySelector('.on');

@@ -16,7 +16,7 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:
 button{font-family:inherit;cursor:pointer}
 .app{min-height:100dvh;display:flex;flex-direction:column;gap:.5rem;max-width:480px;margin:0 auto;padding:3rem .9rem 1rem}
 .top{text-align:center}
-.brand{font-weight:700;font-size:clamp(1.1rem,8vw,2.6rem);color:var(--accent);line-height:1.1}
+.brand{font-weight:700;font-size:clamp(1rem,6vw,1.7rem);color:var(--accent);line-height:1.1;white-space:nowrap}
 .hello{margin-top:.25rem;display:inline-flex;align-items:center;gap:.5rem;background:var(--card);color:var(--ink);border:0;border-radius:28px;padding:.2rem 1rem .2rem .5rem;font-weight:600;font-size:.95rem}
 #settings{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:8px;z-index:20;width:44px;height:44px;border:0;border-radius:50%;background:var(--card);color:var(--ink);font-size:1.5rem;line-height:1;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 #hAv{font-size:2.4rem;line-height:1}#hAv:empty{display:none}
@@ -172,6 +172,20 @@ dialog{max-height:92dvh;overflow:auto}
 .avs{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem}
 .avs button{font-size:2rem;width:3.3rem;height:3.3rem;padding:0;line-height:1;border-radius:50%;border:3px solid transparent;background:var(--bg);transition:transform .12s}
 .avs button.on{border-color:var(--accent);transform:scale(1.12)}
+
+/* explicación con frutas */
+.msgrow{display:flex;align-items:center;justify-content:center;min-height:3rem}
+.msgrow:has(.msg:not(:empty)) .helpbtn{display:none}
+.msgrow .msg{min-height:0}
+.msgrow .msg:empty{display:none}
+.helpbtn{border:0;background:var(--pri);color:#fff;font-weight:700;font-size:1rem;border-radius:18px;padding:.3rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+#fruits .btn{flex:1 1 0;min-width:0;padding:.3rem .2rem;font-size:1.5rem}
+#expEq{font-size:1.5rem;font-weight:700;margin:.3rem 0}
+#expGroups{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin:.6rem 0;max-height:46dvh;overflow:auto}
+.grp{background:var(--bg);border-radius:16px;padding:.4rem;display:flex;flex-wrap:wrap;justify-content:center;gap:2px;font-size:1.45rem;line-height:1.15}
+.grp small{width:100%;font-size:.75rem;color:var(--muted);font-weight:600}
+#expText{font-size:1rem;margin:.3rem 0 1rem}
+
 [hidden]{display:none!important}
 </style>
 </head>
@@ -194,8 +208,11 @@ dialog{max-height:92dvh;overflow:auto}
   <div class="progress"><div id="bar"></div></div>
 
   <div class="card-q">
-    <div><div class="hint">¿Cuánto es?</div><div class="qline"><div id="question" class="question"></div><div id="clock" class="clock" hidden aria-hidden="true"><span id="clockN">3</span></div></div></div>
-    <div><div id="msg" class="msg" aria-live="polite"></div><div id="cd" class="cd"></div></div>
+    <div>
+      <div class="hint">¿Cuánto es?</div>
+      <div class="qline"><div id="question" class="question"></div><div id="clock" class="clock" hidden aria-hidden="true"><span id="clockN">3</span></div></div>
+    </div>
+    <div><div class="msgrow"><div id="msg" class="msg" aria-live="polite"></div><button id="helpBtn" class="helpbtn">💡 Explícame</button></div><div id="cd" class="cd"></div></div>
     <div id="bubbles" class="bubbles"></div>
   </div>
 </div>
@@ -208,12 +225,21 @@ dialog{max-height:92dvh;overflow:auto}
   <button id="again" class="btn btn-lg btn-warn">🔄 Jugar otra vez</button>
 </dialog>
 
+<dialog id="expModal">
+  <h2>💡 ¡Vamos a verlo!</h2>
+  <div id="expEq"></div>
+  <div id="expGroups"></div>
+  <p id="expText"></p>
+  <button id="expClose" class="btn btn-lg btn-warn">¡Entendido!</button>
+</dialog>
+
 <dialog id="nameModal">
-  <div id="avatars" class="avs"></div>
   <h2 id="nameTitle"></h2>
+  <div id="avatars" class="avs"></div>
   <input id="nameInput" maxlength="20" placeholder="Tu nombre" autocomplete="off">
-  <div class="secs"><div class="hint">⏱️ Tiempo del reloj</div><div id="secs" class="modes"><button class="btn btn-sm" data-s="3">3 s</button><button class="btn btn-sm" data-s="5">5 s</button><button class="btn btn-sm" data-s="8">8 s</button></div></div>
+  <div class="secs"><div class="hint">🍎 Mi fruta favorita</div><div id="fruits" class="modes"><button class="btn btn-sm" data-f="🍎" aria-label="Manzana">🍎</button><button class="btn btn-sm" data-f="🍐" aria-label="Pera">🍐</button><button class="btn btn-sm" data-f="🍊" aria-label="Naranja">🍊</button><button class="btn btn-sm" data-f="🍓" aria-label="Fresa">🍓</button></div></div>
   <div class="secs"><div class="hint" id="palHint">🎨 Colores</div><div id="pals" class="modes"></div></div>
+  <div class="secs"><div class="hint">⏱️ Tiempo del reloj</div><div id="secs" class="modes"><button class="btn btn-sm" data-s="3">3 s</button><button class="btn btn-sm" data-s="5">5 s</button><button class="btn btn-sm" data-s="8">8 s</button></div></div>
   <button id="nameSave" class="btn btn-lg btn-warn">¡Guardar!</button>
   <div class="acts">
     <button id="nameCancel" class="btn btn-sm btn-gray">Cancelar</button>
@@ -228,8 +254,9 @@ const PRAISE=['¡Muy bien! 🎉','¡Genial! 🌟','¡Correcto! 🚀','¡Eres un 
 const RETRY=['¡Casi! Intenta otra vez 💪','¡Tú puedes! 🤔','Prueba con otra burbuja 🫧'];
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 let table='all',qs=[],i=0,score=0,streak=0,tries=0,locked=false,raf=0,cdT=0;
-let timerOn=false,tmT=0,secs=3,pal=0;
+let timerOn=false,tmT=0,secs=3,pal=0,fruit='🍎';
 let player='',prog={},tprog={},answers=[],kind='prac',mode='ball',armed=false,avatar='',sel='';
+const FRUITS=['🍎','🍐','🍊','🍓'];
 const P=()=>kind==='test'?tprog:prog;
 const PAL=[
 {n:'Clásico',k:['#3b9cf5','#f06595','#ffa020'],s:['#4db8ff','#ff7ad9','#ffc94d'],sb:'#b58cff',g:['#ef4d4d','#2f5fd0','#f5c518'],gt:'#4a3a00',p:['#f6e53a','#c9b40c','#3cc257','#22903a']},
@@ -263,7 +290,7 @@ function buildAv(){AV.forEach(([e,n])=>{const b=document.createElement('button')
   b.onclick=()=>{sel=e;paintAv()};$('avatars').appendChild(b)})}
 function paintMode(){document.querySelectorAll('#modes .btn').forEach(b=>b.classList.toggle('on',b.dataset.m===mode))}
 document.querySelectorAll('#modes .btn').forEach(b=>b.onclick=()=>{mode=b.dataset.m;DB.set('mode',mode);paintMode();launch()});
-function paintKind(){document.querySelectorAll('#kind .btn[data-k]').forEach(b=>b.classList.toggle('on',b.dataset.k===kind));document.querySelector('.app').classList.toggle('test',kind==='test')}
+function paintKind(){document.querySelectorAll('#kind .btn[data-k]').forEach(b=>b.classList.toggle('on',b.dataset.k===kind));document.querySelector('.app').classList.toggle('test',kind==='test');$('helpBtn').hidden=kind==='test'}
 function applyPal(){const P=PAL[pal],r=document.documentElement.style;
   for(let j=0;j<3;j++){r.setProperty('--k'+(j+1),P.k[j]);r.setProperty('--s'+(j+1),P.s[j]);r.setProperty('--g'+(j+1),P.g[j])}
   r.setProperty('--sb',P.sb);r.setProperty('--gt',P.gt);
@@ -279,6 +306,22 @@ function paintClock(){$('clockBtn').classList.toggle('on',timerOn);$('clockBtn')
 $('clockBtn').onclick=()=>{timerOn=!timerOn;DB.set('timer',timerOn);paintClock();start(table)};
 document.querySelectorAll('#kind .btn[data-k]').forEach(b=>b.onclick=()=>{kind=b.dataset.k;DB.set('kind',kind);paintKind();paintHello();start(table)});
 
+// Fruta favorita (ajustes) y explicación del ejercicio
+function paintFruit(){document.querySelectorAll('#fruits .btn').forEach(b=>b.classList.toggle('on',b.dataset.f===fruit))}
+document.querySelectorAll('#fruits .btn').forEach(b=>b.onclick=()=>{fruit=b.dataset.f;DB.set('fruit',fruit);paintFruit()});
+const expM=$('expModal');
+expM.addEventListener('cancel',e=>e.preventDefault());
+$('helpBtn').onclick=()=>{
+  if(!qs[i]||kind==='test')return;
+  const [a,b]=qs[i];
+  stopClock();
+  $('expEq').textContent=`${a} × ${b} = ?`;
+  $('expGroups').innerHTML=Array.from({length:a},(_,g)=>`<div class="grp"><small>Grupo ${g+1}</small>${fruit.repeat(b)}</div>`).join('');
+  $('expText').textContent=`${a} × ${b} significa ${a} ${a===1?'grupo':'grupos'} de ${b} ${fruit}. Cuenta todas las frutas: ${Array(a).fill(b).join(' + ')} = ? 🤔 ¡Busca el resultado en las burbujas!`;
+  expM.showModal();
+};
+$('expClose').onclick=()=>{expM.close();if(timerOn&&!locked)startClock()};
+
 let ac;function beep(f){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;
   o.frequency.setValueAtTime(f,n);o.frequency.exponentialRampToValueAtTime(f/2.2,n+.08);g.gain.setValueAtTime(.25,n);g.gain.exponentialRampToValueAtTime(.001,n+.12);o.connect(g).connect(ac.destination);o.start();o.stop(n+.13)}catch(e){}}
 
@@ -292,7 +335,7 @@ tb.addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);
 const nameM=$('nameModal'),endM=$('endModal');
 [nameM,endM].forEach(d=>d.addEventListener('cancel',e=>e.preventDefault()));
 function disarm(){armed=false;$('resetBtn').textContent='Borrar mi progreso'}
-function openName(first){$('nameTitle').textContent=first?'¡Hola! Elige tu avatar y tu nombre':'Ajustes ⚙️';$('nameInput').value=player;sel=avatar||AV[0][0];paintAv();
+function openName(first){$('nameTitle').textContent=first?'¡Hola! Elige tu avatar y tu nombre':'Ajustes ⚙️';$('nameInput').value=player;sel=avatar||AV[0][0];paintAv();paintFruit();
   $('nameInput').classList.remove('bad');$('nameCancel').hidden=first;$('resetBtn').hidden=first;disarm();nameM.showModal();$('nameInput').focus()}
 function saveName(){const v=$('nameInput').value.trim().slice(0,20);if(!v){$('nameInput').classList.add('bad');return}
   player=v;avatar=sel;DB.set('name',v);DB.set('avatar',avatar);paintHello();nameM.close()}
@@ -439,7 +482,9 @@ $('again').onclick=()=>{endM.close();start(table)};
 (async()=>{
   await DB.open();player=(await DB.get('name'))||'';avatar=(await DB.get('avatar'))||'';prog=(await DB.get('prog'))||{};
   tprog=(await DB.get('tprog'))||{};kind=(await DB.get('kind'))==='test'?'test':'prac';paintKind();
-  timerOn=(await DB.get('timer'))===true;{const pv=await DB.get('pal');pal=Number.isInteger(pv)&&pv>=0&&pv<PAL.length?pv:0}{const v=await DB.get('secs');secs=[3,5,8].includes(v)?v:3}paintSecs();paintClock();const sm=await DB.get('mode');mode=['pop','bub','glo'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
+  timerOn=(await DB.get('timer'))===true;{const pv=await DB.get('pal');pal=Number.isInteger(pv)&&pv>=0&&pv<PAL.length?pv:0}{const v=await DB.get('secs');secs=[3,5,8].includes(v)?v:3}paintSecs();paintClock();
+  {const f=await DB.get('fruit');fruit=FRUITS.includes(f)?f:'🍎'}paintFruit();
+  const sm=await DB.get('mode');mode=['pop','bub','glo'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
   buildTables();buildAv();buildPal();applyPal();paintHello();start(opts.includes(l)?l:2);
   const sel=tb.querySelector('.on');
   if(sel)tb.scrollLeft+=(sel.getBoundingClientRect().left-tb.getBoundingClientRect().left)-(tb.clientWidth-sel.offsetWidth)/2;

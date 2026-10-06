@@ -3,7 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tablas de Multiplicar</title>
+<title>Tablas de Multiplicar del 1 al 15 | Juego gratis para niños</title>
+<meta name="description" content="Aprende y practica las tablas de multiplicar del 1 al 15 jugando. Juego gratis para niños con pelotas, globos, pop it y burbujas, modo test, contra reloj y niveles de progreso.">
+<meta name="keywords" content="tablas de multiplicar, juego de tablas de multiplicar, practicar tablas, multiplicaciones para niños, tablas del 1 al 15, matemáticas primaria, contra reloj">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="TablasMulti">
+<meta name="theme-color" content="#ff7a59">
+<link rel="canonical" href="https://TU-DOMINIO.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎈%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="Tablas de Multiplicar">
+<meta property="og:title" content="Tablas de Multiplicar del 1 al 15 | Juego gratis para niños">
+<meta property="og:description" content="Practica las tablas de multiplicar jugando: pelotas, globos, pop it y burbujas. Con test, contra reloj y niveles.">
+<meta property="og:url" content="https://TU-DOMINIO.com/">
+<meta property="og:image" content="https://TU-DOMINIO.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tablas de Multiplicar del 1 al 15 | Juego gratis para niños">
+<meta name="twitter:description" content="Practica las tablas de multiplicar jugando. Gratis, sin registro.">
+<meta name="twitter:image" content="https://TU-DOMINIO.com/og-image.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Tablas de Multiplicar","url":"https://TU-DOMINIO.com/","description":"Juego gratuito para practicar las tablas de multiplicar del 1 al 15 con modos de práctica, test y contra reloj.","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"es","isAccessibleForFree":true,"audience":{"@type":"EducationalAudience","educationalRole":"student"},"educationalLevel":"Primaria","learningResourceType":"Juego educativo","teaches":"Tablas de multiplicar","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"¿Qué tablas de multiplicar incluye?","acceptedAnswer":{"@type":"Answer","text":"Incluye las tablas del 1 al 15 y un modo Mezcla que combina preguntas de todas ellas."}},
+{"@type":"Question","name":"¿Es gratis y necesito registrarme?","acceptedAnswer":{"@type":"Answer","text":"Es gratis y funciona en el navegador, sin registro."}},
+{"@type":"Question","name":"¿Se guarda el progreso?","acceptedAnswer":{"@type":"Answer","text":"Sí. Las estrellas, la racha y los niveles alcanzados se guardan en el propio dispositivo."}}
+]}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *,::before,::after{box-sizing:border-box}
@@ -195,12 +223,25 @@ dialog{max-height:92dvh;overflow:auto}
 #progList>div.n{color:var(--ink);font-weight:700}
 #progList small{color:var(--muted);font-size:.68rem;display:block}
 
+/* contenido informativo (SEO) */
+.about{max-width:480px;margin:0 auto;padding:1rem .9rem 2rem;color:var(--muted);font-size:.9rem;line-height:1.4}
+.about h2{font-size:1.1rem;color:var(--ink);margin:.2rem 0 .4rem}
+.about h3{font-size:1rem;color:var(--ink);margin:.8rem 0 .2rem}
+.about p{margin:.2rem 0}
+
+/* apoyo al proyecto */
+.donate{margin-top:1.1rem;padding-top:.9rem;border-top:2px dashed rgba(128,128,128,.35);font-size:.95rem}
+.donate b{font-size:1.2rem;display:block;margin-bottom:.2rem}
+.donate .modes{margin:.6rem 0}
+.donate .modes .btn{flex:1 1 0;min-width:0;padding:.35rem .2rem;font-size:.95rem;white-space:nowrap}
+a.btn{display:inline-block;text-decoration:none}
+
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top"><div class="brand">🎈 Tablas de Multiplicar</div><div id="hello" class="hello"><span id="hAv"></span><span id="hTx"></span></div></div>
+  <div class="top"><h1 class="brand" style="margin:0">🎈 Tablas de Multiplicar</h1><div id="hello" class="hello"><span id="hAv"></span><span id="hTx"></span></div></div>
   <button id="settings" aria-label="Ajustes" title="Ajustes">⚙️</button>
   <button id="prog" aria-label="Mi progreso" title="Mi progreso">🏆</button>
 
@@ -227,12 +268,37 @@ dialog{max-height:92dvh;overflow:auto}
   </div>
 </div>
 
+<noscript><p style="max-width:480px;margin:1rem auto;padding:0 1rem">Para jugar a las tablas de multiplicar necesitas activar JavaScript en tu navegador.</p></noscript>
+
+<footer class="about">
+  <h2>Practica las tablas de multiplicar del 1 al 15</h2>
+  <p>Juego educativo gratuito para que niños y niñas aprendan las tablas de multiplicar de forma divertida. Elige una tabla del 1 al 15 o la mezcla de todas, y responde reventando pelotas, globos, pop it o burbujas de jabón.</p>
+  <h3>Modos de juego</h3>
+  <p><b>Práctica:</b> con ayuda visual de frutas para entender cada multiplicación. <b>Test:</b> 10 preguntas y repaso de errores al final. <b>Contra reloj:</b> responde antes de que se acabe el tiempo.</p>
+  <h3>Progreso y niveles</h3>
+  <p>Gana hasta 3 estrellas por tabla, sigue tu racha de aciertos y consulta tus niveles (Principiante, Aprendiz, Experto y Maestro). Tu avance se guarda en tu dispositivo, sin registro.</p>
+  <h3>Preguntas frecuentes</h3>
+  <p><b>¿Qué tablas de multiplicar incluye?</b> Incluye las tablas del 1 al 15 y un modo Mezcla que combina preguntas de todas ellas.</p>
+  <p><b>¿Es gratis y necesito registrarme?</b> Es gratis y funciona en el navegador, sin registro.</p>
+  <p><b>¿Se guarda el progreso?</b> Sí. Las estrellas, la racha y los niveles alcanzados se guardan en el propio dispositivo.</p>
+</footer>
+
 <dialog id="endModal">
   <div id="stars" style="font-size:3rem"></div>
   <h2 id="endTitle"></h2>
   <p id="endText"></p>
   <div id="review"></div>
   <button id="again" class="btn btn-lg btn-warn">🔄 Jugar otra vez</button>
+  <div class="donate">
+    <b>🎉 ¡Buen trabajo!</b>
+    <div>¿Te fue útil esta herramienta?<br>Ayúdame a mantenerla gratuita para otros estudiantes.</div>
+    <div id="amts" class="modes">
+      <button class="btn btn-sm on" data-u="https://www.paypal.com/paypalme/asalazar87/50">☕ $50</button>
+      <button class="btn btn-sm" data-u="https://www.paypal.com/paypalme/asalazar87/100">☕ $100</button>
+      <button class="btn btn-sm" data-u="https://www.paypal.com/paypalme/asalazar87">Otra cantidad</button>
+    </div>
+    <a id="donateGo" class="btn btn-warn" href="https://www.paypal.com/paypalme/asalazar87/50" target="_blank" rel="noopener noreferrer">Apoyar el proyecto</a>
+  </div>
 </dialog>
 
 <dialog id="expModal">
@@ -496,6 +562,8 @@ function finish(){
   endM.showModal();
 }
 $('again').onclick=()=>{endM.close();start(table)};
+document.querySelectorAll('#amts .btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#amts .btn').forEach(x=>x.classList.toggle('on',x===b));$('donateGo').href=b.dataset.u});
 
 // Niveles alcanzados
 const LVN=['Principiante 🌱','Aprendiz 📘','Experto 🚀','Maestro 🏆'];

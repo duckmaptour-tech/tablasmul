@@ -1,0 +1,16 @@
+# Tablas de Multiplicar
+
+> Juego educativo gratuito en español para aprender y practicar las tablas de multiplicar del 1 al 15. Funciona en el navegador, sin registro.
+
+Pensado para niños y niñas de primaria. Se responde reventando pelotas, globos, pop it o burbujas de jabón.
+
+## Qué ofrece
+
+- Tablas del 1 al 15 y modo Mezcla.
+- Modo Práctica con explicación visual usando frutas.
+- Modo Test de 10 preguntas con repaso de errores.
+- Modo Contra reloj (3, 5 u 8 segundos por pregunta).
+- Estrellas por tabla, racha de aciertos y niveles: Principiante, Aprendiz, Experto y Maestro.
+- El progreso se guarda en el dispositivo del usuario.
+
+## Enlaces

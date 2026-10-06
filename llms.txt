@@ -14,3 +14,5 @@ Pensado para niños y niñas de primaria. Se responde reventando pelotas, globos
 - El progreso se guarda en el dispositivo del usuario.
 
 ## Enlaces
+
+- [Juego](https://duckmaptour-tech.github.io/tablasmul/): página principal con todo el contenido.

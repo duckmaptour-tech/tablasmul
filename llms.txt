@@ -15,4 +15,4 @@ Pensado para niños y niñas de primaria. Se responde reventando pelotas, globos
 
 ## Enlaces
 
-- [Juego](https://duckmaptour-tech.github.io/tablasmul/): página principal con todo el contenido.
+- [Juego](https://ablasmultiplicar.site): página principal con todo el contenido.

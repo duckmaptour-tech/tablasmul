@@ -249,6 +249,10 @@ a.btn{display:inline-block;text-decoration:none}
 .question{cursor:pointer}
 :focus-visible{outline:4px solid #ffc107;outline-offset:3px}
 
+/* ajustes: botones de guardar siempre visibles */
+.nfoot{position:sticky;bottom:-1.5rem;z-index:2;background:var(--card);padding:.6rem 0 .2rem;box-shadow:0 -10px 10px -10px rgba(0,0,0,.3)}
+.nfoot .acts{margin-top:.6rem}
+
 /* modo televisión / pantalla grande */
 @media (min-width:1000px) and (min-height:500px){
 html{font-size:min(44px,calc(13px + .65vw))}
@@ -261,6 +265,10 @@ html{font-size:min(44px,calc(13px + .65vw))}
 #voice{top:calc(env(safe-area-inset-top,0px) + 6.4rem + 32px)}
 .bubbles.popit{width:min(100%,560px)}
 dialog{width:min(94vw,34rem)}
+#nameModal{width:min(94vw,46rem)}
+.nbody{display:grid;grid-template-columns:1fr 1fr;column-gap:1.5rem;align-items:start}
+#nameInput{margin:.6rem 0}
+.secs{margin:.1rem 0 .6rem}
 #expGroups{grid-template-columns:repeat(3,1fr)}
 .about{max-width:1100px}
 }
@@ -349,15 +357,20 @@ dialog{width:min(94vw,34rem)}
 
 <dialog id="nameModal">
   <h2 id="nameTitle"></h2>
+  <div class="nbody"><div class="nl">
   <div id="avatars" class="avs"></div>
   <input id="nameInput" maxlength="20" placeholder="Tu nombre" autocomplete="off">
+  </div><div class="nr">
   <div class="secs"><div class="hint">🍎 Mi fruta favorita</div><div id="fruits" class="modes"><button class="btn btn-sm" data-f="🍎" aria-label="Manzana">🍎</button><button class="btn btn-sm" data-f="🍐" aria-label="Pera">🍐</button><button class="btn btn-sm" data-f="🍊" aria-label="Naranja">🍊</button><button class="btn btn-sm" data-f="🍓" aria-label="Fresa">🍓</button></div></div>
   <div class="secs"><div class="hint" id="palHint">🎨 Colores</div><div id="pals" class="modes"></div></div>
   <div class="secs"><div class="hint">⏱️ Tiempo del reloj</div><div id="secs" class="modes"><button class="btn btn-sm" data-s="3">3 s</button><button class="btn btn-sm" data-s="5">5 s</button><button class="btn btn-sm" data-s="8">8 s</button></div></div>
+  </div></div>
+  <div class="nfoot">
   <button id="nameSave" class="btn btn-lg btn-warn">¡Guardar!</button>
   <div class="acts">
     <button id="nameCancel" class="btn btn-sm btn-gray">Cancelar</button>
     <button id="resetBtn" class="btn btn-sm btn-red">Borrar mi progreso</button>
+  </div>
   </div>
 </dialog>
 
@@ -638,3 +651,4 @@ $('question').onclick=()=>{if(!locked&&qs[i]){const [a,b]=qs[i];say(`${a} por ${
 </script>
 </body>
 </html>
+

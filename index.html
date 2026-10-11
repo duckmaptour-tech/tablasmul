@@ -7,23 +7,23 @@
 <meta name="description" content="Aprende y practica las tablas de multiplicar del 1 al 15 jugando. Juego gratis para niños con pelotas, globos, pop it y burbujas, modo test, contra reloj y niveles de progreso.">
 <meta name="keywords" content="tablas de multiplicar, juego de tablas de multiplicar, practicar tablas, multiplicaciones para niños, tablas del 1 al 15, matemáticas primaria, contra reloj">
 <meta name="robots" content="index, follow, max-image-preview:large">
-<meta name="author" content="TablasMulticar">
+<meta name="author" content="TablasMulti">
 <meta name="theme-color" content="#ff7a59">
-<link rel="canonical" href="https://tablasmultiplicar.site">
+<link rel="canonical" href="https://duckmaptour-tech.github.io/tablasmul/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎈%3C/text%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_MX">
 <meta property="og:site_name" content="Tablas de Multiplicar">
 <meta property="og:title" content="Tablas de Multiplicar del 1 al 15 | Juego gratis para niños">
 <meta property="og:description" content="Practica las tablas de multiplicar jugando: pelotas, globos, pop it y burbujas. Con test, contra reloj y niveles.">
-<meta property="og:url" content="https://tablasmultiplicar.site">
-<meta property="og:image" content="https://tablasmultiplicar.site/og-image.png">
+<meta property="og:url" content="https://duckmaptour-tech.github.io/tablasmul/">
+<meta property="og:image" content="https://duckmaptour-tech.github.io/tablasmul/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Tablas de Multiplicar del 1 al 15 | Juego gratis para niños">
 <meta name="twitter:description" content="Practica las tablas de multiplicar jugando. Gratis, sin registro.">
-<meta name="twitter:image" content="https://tablasmultiplicar.site/og-image.png">
+<meta name="twitter:image" content="https://duckmaptour-tech.github.io/tablasmul/og-image.png">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"Tablas de Multiplicar","url":"https://tablasmultiplicar.site","description":"Juego gratuito para practicar las tablas de multiplicar del 1 al 15 con modos de práctica, test y contra reloj.","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"es","isAccessibleForFree":true,"audience":{"@type":"EducationalAudience","educationalRole":"student"},"educationalLevel":"Primaria","learningResourceType":"Juego educativo","teaches":"Tablas de multiplicar","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Tablas de Multiplicar","url":"https://duckmaptour-tech.github.io/tablasmul/","description":"Juego gratuito para practicar las tablas de multiplicar del 1 al 15 con modos de práctica, test y contra reloj.","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"es","isAccessibleForFree":true,"audience":{"@type":"EducationalAudience","educationalRole":"student"},"educationalLevel":"Primaria","learningResourceType":"Juego educativo","teaches":"Tablas de multiplicar","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -243,6 +243,28 @@ dialog{max-height:92dvh;overflow:auto}
 .donate .modes .btn{flex:1 1 0;min-width:0;padding:.4rem .2rem;font-size:1.05rem;white-space:nowrap}
 a.btn{display:inline-block;text-decoration:none}
 
+/* narración y botones flotantes */
+#voice{position:fixed;top:calc(env(safe-area-inset-top,0px) + 112px);right:8px;z-index:20;width:44px;height:44px;border:0;border-radius:50%;background:var(--card);color:var(--ink);font-size:1.4rem;line-height:1;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+#voice.off{opacity:.55}
+.question{cursor:pointer}
+:focus-visible{outline:4px solid #ffc107;outline-offset:3px}
+
+/* modo televisión / pantalla grande */
+@media (min-width:1000px) and (min-height:500px){
+html{font-size:min(44px,calc(13px + .65vw))}
+.app{max-width:1500px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-rows:auto auto auto auto 1fr;column-gap:2rem;row-gap:.8rem;padding:1.5rem 5.5rem 1.5rem 2.5%}
+.app>*:not(.card-q){grid-column:1}
+.app>.card-q{grid-column:2;grid-row:1/-1;padding:1.5rem 1.2rem}
+#settings,#prog,#voice{width:3.2rem;height:3.2rem;font-size:1.7rem;right:12px}
+#settings{top:calc(env(safe-area-inset-top,0px) + 12px)}
+#prog{top:calc(env(safe-area-inset-top,0px) + 3.2rem + 22px)}
+#voice{top:calc(env(safe-area-inset-top,0px) + 6.4rem + 32px)}
+.bubbles.popit{width:min(100%,560px)}
+dialog{width:min(94vw,34rem)}
+#expGroups{grid-template-columns:repeat(3,1fr)}
+.about{max-width:1100px}
+}
+
 [hidden]{display:none!important}
 </style>
 </head>
@@ -251,6 +273,7 @@ a.btn{display:inline-block;text-decoration:none}
   <div class="top"><h1 class="brand" style="margin:0">🎈 Tablas de Multiplicar</h1><div id="hello" class="hello"><span id="hAv"></span><span id="hTx"></span></div></div>
   <button id="settings" aria-label="Ajustes" title="Ajustes">⚙️</button>
   <button id="prog" aria-label="Mi progreso" title="Mi progreso">🏆</button>
+  <button id="voice" aria-label="Narración" title="Narración" aria-pressed="true">🔊</button>
 
   <div>
     <div class="row"><div id="kind" class="modes"><button class="btn btn-sm" data-k="prac">📝 Práctica</button><button class="btn btn-sm" data-k="test">🧪 Test</button><button id="clockBtn" class="btn btn-sm" aria-pressed="false">⏱️ Reloj</button></div></div>
@@ -340,6 +363,7 @@ a.btn{display:inline-block;text-decoration:none}
 
 <script>
 const $=id=>document.getElementById(id);
+const U=()=>parseFloat(getComputedStyle(document.documentElement).fontSize)/16||1;
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const PRAISE=['¡Muy bien! 🎉','¡Genial! 🌟','¡Correcto! 🚀','¡Eres un crack! 🦄','¡Excelente! 🏆'];
 const RETRY=['¡Casi! Intenta otra vez 💪','¡Tú puedes! 🤔','Prueba con otra burbuja 🫧'];
@@ -348,6 +372,15 @@ let table='all',qs=[],i=0,score=0,streak=0,tries=0,locked=false,raf=0,cdT=0;
 let timerOn=false,tmT=0,secs=3,pal=0,fruit='🍎';
 let player='',prog={},tprog={},answers=[],kind='prac',mode='ball',armed=false,avatar='',sel='';
 const FRUITS=['🍎','🍐','🍊','🍓'];
+// Narración (síntesis de voz del navegador)
+let voiceOn=true,voice=null;
+const SYN=window.speechSynthesis;
+function pickVoice(){const vs=SYN?SYN.getVoices():[];voice=vs.find(v=>/^es[-_]MX/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang))||null}
+if(SYN){pickVoice();SYN.onvoiceschanged=pickVoice}
+const clean=t=>String(t).replace(/[^\p{L}\p{N}\s¡!¿?,.:;]/gu,' ').replace(/\s+/g,' ').trim();
+function say(t){if(!voiceOn||!SYN||!t)return;try{SYN.cancel();const u=new SpeechSynthesisUtterance(clean(t));u.lang=voice?voice.lang:'es-MX';if(voice)u.voice=voice;u.rate=.9;u.pitch=1.1;SYN.speak(u)}catch(e){}}
+function stopSay(){try{SYN&&SYN.cancel()}catch(e){}}
+function paintVoice(){const b=$('voice');b.textContent=voiceOn?'🔊':'🔇';b.classList.toggle('off',!voiceOn);b.setAttribute('aria-pressed',voiceOn);if(!SYN)b.hidden=true}
 const P=()=>kind==='test'?tprog:prog;
 const PAL=[
 {n:'Clásico',k:['#3b9cf5','#f06595','#ffa020'],s:['#4db8ff','#ff7ad9','#ffc94d'],sb:'#b58cff',g:['#ef4d4d','#2f5fd0','#f5c518'],gt:'#4a3a00',p:['#f6e53a','#c9b40c','#3cc257','#22903a']},
@@ -411,8 +444,9 @@ $('helpBtn').onclick=()=>{
   $('expGroups').innerHTML=Array.from({length:a},(_,g)=>`<div class="grp"><small>Grupo ${g+1}</small>${fruit.repeat(b)}</div>`).join('');
   $('expText').textContent=`${a} × ${b} significa ${a} ${a===1?'grupo':'grupos'} de ${b} ${fruit}. Cuenta todas las frutas: ${Array(a).fill(b).join(' + ')} = ? 🤔 ¡Busca el resultado en las burbujas!`;
   expM.showModal();
+  say(`${a} por ${b} significa ${a} ${a===1?'grupo':'grupos'} de ${b} frutas. Suma ${Array(a).fill(b).join(' más ')}. ¡Busca el resultado en las burbujas!`);
 };
-$('expClose').onclick=()=>{expM.close();if(timerOn&&!locked)startClock()};
+$('expClose').onclick=()=>{stopSay();expM.close();if(timerOn&&!locked)startClock()};
 
 let ac;function beep(f){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;
   o.frequency.setValueAtTime(f,n);o.frequency.exponentialRampToValueAtTime(f/2.2,n+.08);g.gain.setValueAtTime(.25,n);g.gain.exponentialRampToValueAtTime(.001,n+.12);o.connect(g).connect(ac.destination);o.start();o.stop(n+.13)}catch(e){}}
@@ -467,7 +501,7 @@ function timeUp(){
   streak=0;$('streak').textContent=0;
   const ok=[...box.children].find(x=>x.dataset.v===String(ans));if(ok)ok.classList.add('ok');
   $('question').textContent=`${a} × ${b} = ${ans}`;$('question').classList.add('ok');
-  $('msg').textContent='¡Se acabó el tiempo! ⏰';$('msg').style.color='var(--bad)';
+  $('msg').textContent='¡Se acabó el tiempo! ⏰';$('msg').style.color='var(--bad)';say(`Se acabó el tiempo. ${a} por ${b} es ${ans}.`);
   autoNext();
 }
 function show(){
@@ -479,7 +513,7 @@ function show(){
   shuffle([a*b,...distract(a,b)]).forEach(v=>{
     const el=document.createElement('button');el.className='bubble';el.textContent=v;el.dataset.v=v;
     el.onclick=()=>pick(el,v,a*b);box.appendChild(el)});
-  launch();startClock();
+  launch();startClock();say(`${a} por ${b}. ¿Cuánto es?`);
 }
 function launch(){
   cancelAnimationFrame(raf);
@@ -490,10 +524,10 @@ function launch(){
     for(let s=0;s<6;s++){if(slots.has(s)){const f=document.createElement('button');f.className='bubble filler';f.tabIndex=-1;f.setAttribute('aria-hidden','true');
       f.onclick=()=>{f.classList.toggle('popped');beep(f.classList.contains('popped')?600:420)};list.push(f)}else list.push(ans[k++])}
     box.replaceChildren(...list);
-    const d=Math.min(104,((box.clientWidth||300)-34)/3);
+    const d=Math.min(104*U(),((box.clientWidth||300)-34)/3);
     list.forEach(el=>{el.style.width=el.style.height=d+'px';el.style.left=el.style.top=''});return}
   if(mode==='bub'||mode==='glo'){
-    const W=box.clientWidth||300,H=box.clientHeight||230,d=Math.min(110,W*.28),h=mode==='glo'?d*1.3:d,calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const W=box.clientWidth||300,H=box.clientHeight||230,d=Math.min(110*U(),W*.28),h=mode==='glo'?d*1.3:d,calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
     const els=[...box.children],n=els.length;
     const bs=els.map((el,k)=>{el.style.width=d+'px';el.style.height=h+'px';
       return{el,bx:Math.min(W-d,Math.max(0,W*(k+.5)/n-d/2+(Math.random()-.5)*d*.4)),y:H*k/n+Math.random()*H/n,
@@ -504,8 +538,8 @@ function launch(){
         b.el.style.top=b.y+'px';b.el.style.left=Math.min(W-d,Math.max(0,b.bx+Math.sin(tt*b.w+b.ph)*b.amp))+'px'}
       raf=requestAnimationFrame(step)};
     raf=requestAnimationFrame(step);return}
-  const W0=box.clientWidth||300,H0=box.clientHeight||230,d=Math.min(120,W0*.3);
-  const sp=matchMedia('(prefers-reduced-motion:reduce)').matches?30:95,arr=[];
+  const W0=box.clientWidth||300,H0=box.clientHeight||230,d=Math.min(120*U(),W0*.3);
+  const sp=matchMedia('(prefers-reduced-motion:reduce)').matches?30:95*U(),arr=[];
   [...box.children].forEach(el=>{el.style.width=el.style.height=d+'px';let x,y,k=0;
     do{x=Math.random()*(W0-d);y=Math.random()*(H0-d);k++}while(k<80&&arr.some(b=>Math.hypot(b.x-x,b.y-y)<d*1.05));
     const a=Math.random()*6.283,s=sp*(.7+Math.random()*.6);arr.push({el,x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s})});
@@ -549,12 +583,12 @@ function pick(el,v,ans){
   if(v===ans){
     locked=true;stopClock();el.classList.add('ok');if(tries===0)score++;streak++;if(streak%3===0)confetti();
     $('score').textContent=score;$('streak').textContent=streak;
-    const [a,b]=qs[i];$('question').textContent=`${a} × ${b} = ${ans}`;$('question').classList.add('ok');$('msg').textContent=nm(rnd(PRAISE));$('msg').style.color='var(--ok)';
+    const [a,b]=qs[i];$('question').textContent=`${a} × ${b} = ${ans}`;$('question').classList.add('ok');$('msg').textContent=nm(rnd(PRAISE));$('msg').style.color='var(--ok)';say(`${a} por ${b} es ${ans}. ${$('msg').textContent}`);
     box.querySelectorAll('.bubble').forEach(x=>x.disabled=true);
     autoNext();
   }else{
     tries++;streak=0;$('streak').textContent=0;el.classList.add('bad');el.disabled=true;
-    $('msg').textContent=nm(rnd(RETRY));$('msg').style.color='var(--bad)';
+    $('msg').textContent=nm(rnd(RETRY));$('msg').style.color='var(--bad)';say($('msg').textContent);
   }
 }
 function finish(){
@@ -568,6 +602,7 @@ function finish(){
   const bad=test?answers.filter(r=>r.v!==r.ans):[];
   $('review').innerHTML=bad.length?'<b>Para repasar:</b><br>'+bad.map(r=>`${r.a} × ${r.b} = ${r.ans} <span class="hint">(${r.v===null?'sin respuesta ⏰':'marcaste '+r.v})</span>`).join('<br>'):'';
   endM.showModal();
+  say(`${$('endTitle').textContent}. ${test?'Resultado del test':'Acertaste'} ${score} de 10.`);
 }
 $('again').onclick=()=>{endM.close();start(table)};
 document.querySelectorAll('#amts .btn').forEach(b=>b.onclick=()=>{
@@ -586,13 +621,15 @@ function openProg(){
 }
 $('prog').onclick=openProg;
 $('progClose').onclick=()=>$('progModal').close();
+$('voice').onclick=()=>{voiceOn=!voiceOn;DB.set('voice',voiceOn);paintVoice();if(voiceOn)say('Narración activada');else stopSay()};
+$('question').onclick=()=>{if(!locked&&qs[i]){const [a,b]=qs[i];say(`${a} por ${b}. ¿Cuánto es?`)}};
 
 (async()=>{
   await DB.open();player=(await DB.get('name'))||'';avatar=(await DB.get('avatar'))||'';prog=(await DB.get('prog'))||{};
   tprog=(await DB.get('tprog'))||{};kind=(await DB.get('kind'))==='test'?'test':'prac';paintKind();
   timerOn=(await DB.get('timer'))===true;{const pv=await DB.get('pal');pal=Number.isInteger(pv)&&pv>=0&&pv<PAL.length?pv:0}{const v=await DB.get('secs');secs=[3,5,8].includes(v)?v:3}paintSecs();paintClock();
   {const f=await DB.get('fruit');fruit=FRUITS.includes(f)?f:'🍎'}paintFruit();
-  const sm=await DB.get('mode');mode=['pop','bub','glo'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
+  voiceOn=(await DB.get('voice'))!==false;paintVoice();const sm=await DB.get('mode');mode=['pop','bub','glo'].includes(sm)?sm:'ball';paintMode();const l=await DB.get('last');
   buildTables();buildAv();buildPal();applyPal();paintHello();start(opts.includes(l)?l:2);
   const sel=tb.querySelector('.on');
   if(sel)tb.scrollLeft+=(sel.getBoundingClientRect().left-tb.getBoundingClientRect().left)-(tb.clientWidth-sel.offsetWidth)/2;
